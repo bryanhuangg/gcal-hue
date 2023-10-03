@@ -1,2 +1,2 @@
-## GCal Hue
-An opensource Chrome extention to customize Google Calendar!
+## GCal Hue [WIP]
+An opensource Chrome extension to customize Google Calendar. (Prototype)
