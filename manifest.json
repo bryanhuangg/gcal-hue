@@ -1,0 +1,20 @@
+{
+    "manifest_version": 3,
+    "name": "Hue for Google Calendar",
+    "version": "1.0.0",
+    "description": "A Chrome extension to customize Google Calendar.",
+    "host_permissions": [ "https://calendar.google.com/*", "http://calendar.google.com/*" ],
+    "permissions": [
+      "activeTab",
+      "storage"
+    ],
+    "action": {
+      "default_popup": "popup/popup.html"
+    },
+    "content_scripts": [ {
+      "js": [ "content/content.js" ],
+      "matches": [ "https://calendar.google.com/*", "http://calendar.google.com/*" ],
+      "run_at": "document_end"
+    } ]
+}
+  
