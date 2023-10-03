@@ -1,15 +1,14 @@
-console.log("GCal Hue Injected: content.js loaded");
-
+// -- Inject CSS into the DOM -- //
+const eventBarClass = ".g3dbUc";
 function changeCalendarEventColor() {
   const eventIdToSelect =
-    "MzIzMmM1a2RlZjc3NG40dm84OG5iYjBsZXQgYjJkMG83NGcwbWVyZzdkaWhoNGNnNDQ0cG9AZw";
-
+    "MjAyMzEwMDlfN2tqdHBrdDNoZGd2Mmc3OHJ2MXIzcGkxcDAgZW4uY2FuYWRpYW4ub2ZmaWNpYWwjaG9saWRheUB2";
   const eventWrapperElement = document.querySelector(
     `[data-eventid="${eventIdToSelect}"]`
   );
 
   if (eventWrapperElement) {
-    const eventElement = eventWrapperElement.querySelector(".g3dbUc");
+    const eventElement = eventWrapperElement.querySelector(eventBarClass);
 
     if (eventElement) {
       eventElement.style.backgroundColor = "orange";
@@ -20,12 +19,41 @@ function changeCalendarEventColor() {
     console.log("Wrapper element not found");
   }
 }
- 
-const observerConfig = {
-  childList: true, // Watch for changes to the structure of the DOM
-  subtree: true, // Watch for changes in the entire subtree
+
+const colorChangeObserverConfig = {
+  childList: true,
+  subtree: true,
 };
+const colorChangeObserver = new MutationObserver(changeCalendarEventColor);
+colorChangeObserver.observe(document, colorChangeObserverConfig);
 
-const observer = new MutationObserver(changeCalendarColor);
 
-observer.observe(document, observerConfig);
+
+// --- Inject button into the DOM --- //
+function injectButton() {
+    const buttonElement = document.createElement("button");
+    buttonElement.textContent = "Change Event Color";
+    buttonElement.style.margin = "5px"; 
+    buttonElement.addEventListener("click", () => {
+      changeCalendarEventColor(); 
+    });
+    const parentElement = document.querySelector('[jsname="hklcae"]');
+  
+    if (parentElement) {
+      if (!parentElement.querySelector("button")) {
+        parentElement.appendChild(buttonElement);
+      }
+    } else {
+      console.log("Parent element not found");
+    }
+  }
+  
+  const buttonObserverConfig = {
+    childList: true,
+    subtree: true, 
+  };
+  
+  const buttonObserver = new MutationObserver(injectButton);
+  buttonObserver.observe(document, buttonObserverConfig);
+
+  
