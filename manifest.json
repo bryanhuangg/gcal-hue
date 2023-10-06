@@ -8,11 +8,8 @@
       "activeTab",
       "storage"
     ],
-    "action": {
-      "default_popup": "popup/popup.html"
-    },
     "content_scripts": [ {
-      "js": [ "content/content.js" ],
+      "js": [ "content/colour.js", "content/selector.js" ],
       "matches": [ "https://calendar.google.com/*", "http://calendar.google.com/*" ],
       "run_at": "document_end"
     } ]
