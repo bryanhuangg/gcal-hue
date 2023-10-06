@@ -2,7 +2,6 @@
 
 const calendarObserver = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
-    console.log("Calendar observer triggered.");
     applyColorsToEvents();
   });
 });
