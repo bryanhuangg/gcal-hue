@@ -1,4 +1,12 @@
 // --- Inject button into the DOM --- //
+const buttonObserverConfig = {
+    childList: true,
+    subtree: true,
+  };
+  
+  const buttonObserver = new MutationObserver(injectColorPickerInput);
+  buttonObserver.observe(document, buttonObserverConfig);
+
 function injectColorPickerInput() {
   const colorPickerInput = document.createElement("input");
   colorPickerInput.type = "color";
@@ -18,11 +26,24 @@ function injectColorPickerInput() {
 
   const parentElement = document.querySelector('[jsname="hklcae"]');
   if (parentElement) {
+    hideCheckmarkIcon(parentElement);
     if (!parentElement.querySelector("input[type='color']")) {
       parentElement.appendChild(colorPickerInput);
     }
   }
 }
+
+
+
+function hideCheckmarkIcon(parentElement) {
+  const existingIconElement = parentElement.querySelector(
+    ".google-material-icons.meh4fc.hggPq.lLCaB.M8B6kc.eO2Zfd"
+  );
+  if (existingIconElement) {
+    existingIconElement.className = "google-material-icons meh4fc hggPq lLCaB M8B6kc";
+  }
+}
+
 
 function findParentDataEventId(element) {
   while (element && !element.getAttribute("data-eid")) {
@@ -30,11 +51,3 @@ function findParentDataEventId(element) {
   }
   return element;
 }
-
-const buttonObserverConfig = {
-  childList: true,
-  subtree: true,
-};
-
-const buttonObserver = new MutationObserver(injectColorPickerInput);
-buttonObserver.observe(document, buttonObserverConfig);

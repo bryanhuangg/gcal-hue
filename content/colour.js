@@ -1,15 +1,19 @@
+// --- Observers --- //
+
 const calendarObserver = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
+    console.log("Calendar observer triggered.");
     applyColorsToEvents();
   });
 });
-
 const calendarObserverConfig = {
   childList: true,
   subtree: true,
 };
-
 calendarObserver.observe(document, calendarObserverConfig);
+
+const targetElement = document.getElementById("yDmH0d");
+calendarObserver.observe(targetElement, calendarObserverConfig);
 
 function applyColorsToEvents() {
   chrome.storage.sync.get(null, (items) => {
@@ -23,7 +27,6 @@ function applyColorsToEvents() {
 }
 
 // --- Event bar color change --- //
-const eventClass = ".g3dbUc";
 function changeCalendarEventColor(eventId, color) {
   const eventWrapperElements = document.querySelectorAll(
     `[data-eventid="${eventId}"]`
@@ -35,12 +38,11 @@ function changeCalendarEventColor(eventId, color) {
       if (eventElement) {
         eventElement.style.backgroundColor = color;
       }
+
+      const accentElement = eventWrapperElement.querySelector(".T7dzVe");
+      if (accentElement) {
+        accentElement.style.backgroundColor = color;
+      }
     });
   }
-
-  // trigger hide checkmark
 }
-
-
-
-// --- Event  --- //
