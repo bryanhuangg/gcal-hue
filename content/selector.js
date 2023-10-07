@@ -21,7 +21,7 @@ function injectColorPickerInput() {
       const eventId = eventWrapperElement.getAttribute("data-eid");
       const color = event.target.value;
       chrome.storage.sync.set({ [eventId]: color }).then(() => {
-        changeCalendarEventColor(eventId, color);
+        changeEventColor(eventId, color);
       });
     }
   });
