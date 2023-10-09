@@ -34,27 +34,43 @@ function changeEventColor(eventId, color) {
 
   if (eventWrapperElements) {
     eventWrapperElements.forEach((eventWrapperElement) => {
-      const eventElement = eventWrapperElement.querySelector(".g3dbUc");
-      if (eventElement) {
-        eventElement.style.backgroundColor = color;
-      }
-
-      const eventBorder = eventWrapperElement.querySelector(".zWcBU");
-      if (eventBorder) {
-        if (eventBorder.style.borderRightColor) {
-          eventBorder.style.borderRightColor = color;
-        }
-
-        // Check if border-left-color is present
-        if (eventBorder.style.borderLeftColor) {
-          eventBorder.style.borderLeftColor = color;
-        }
-      }
-
-      const accentElement = eventWrapperElement.querySelector(".T7dzVe");
-      if (accentElement) {
-        accentElement.style.backgroundColor = color;
-      }
+      changeEventMainColor(eventWrapperElement, color);
+      changeEventBorderColor(eventWrapperElement, color);
+      changeMaterialIconColor(eventWrapperElement, color);
     });
+  }
+}
+
+// --- Color change helpers -- //
+
+function changeEventMainColor(eventWrapperElement, color) {
+  let eventElement = eventWrapperElement.querySelector(".VrDepf");
+  if (eventElement) {
+    // eventElement is a dot (specific time)
+    eventElement.style.borderColor = color;
+  } else {
+    // event Element is a bar (all day event)
+    eventElement = eventWrapperElement.querySelector(".g3dbUc");
+    if (eventElement) {
+      eventElement.style.backgroundColor = color;
+    }
+  }
+}
+
+function changeMaterialIconColor(eventWrapperElement, color) {
+  const materialIconElement = eventWrapperElement.querySelector(".T7dzVe");
+  if (materialIconElement) {
+    materialIconElement.style.backgroundColor = color;
+  }
+}
+
+function changeEventBorderColor(eventWrapperElement, color) {
+  const eventBorder = eventWrapperElement.querySelector(".zWcBU");
+  if (eventBorder) {
+    if (eventBorder.style.borderRightColor) {
+      eventBorder.style.borderRightColor = color;
+    } else if (eventBorder.style.borderLeftColor) {
+      eventBorder.style.borderLeftColor = color;
+    }
   }
 }
