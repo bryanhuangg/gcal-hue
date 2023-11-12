@@ -36,6 +36,7 @@ function changeEventColor(eventId, color) {
     eventWrapperElements.forEach((eventWrapperElement) => {
       changeEventMainColor(eventWrapperElement, color);
       changeEventBorderColor(eventWrapperElement, color);
+      changeEventSideBarColor(eventWrapperElement, color);
       changeMaterialIconColor(eventWrapperElement, color);
     });
   }
@@ -61,6 +62,14 @@ function changeMaterialIconColor(eventWrapperElement, color) {
   const materialIconElement = eventWrapperElement.querySelector(".T7dzVe");
   if (materialIconElement) {
     materialIconElement.style.backgroundColor = color;
+  }
+}
+
+function changeEventSideBarColor(eventWrapperElement, color) {
+  const sidebarElement = eventWrapperElement.querySelector('.zhRc7');
+
+  if (sidebarElement) {
+    sidebarElement.style.backgroundColor = color;
   }
 }
 
