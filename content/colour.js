@@ -83,3 +83,9 @@ function changeEventBorderColor(eventWrapperElement, color) {
     }
   }
 }
+
+
+// Check storage usage
+chrome.storage.sync.getBytesInUse(null, function(bytesUsed) {
+  console.log("Storage used: " + bytesUsed + " bytes");
+});

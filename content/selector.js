@@ -48,10 +48,11 @@ function injectColorPickerInput() {
 
   // Clear Button as Image
   const clearButton = document.createElement("img");
-  clearButton.src = "images/icon.png";
+  clearButton.src = chrome.runtime.getURL("images/trash16.png");
   clearButton.alt = "Clear"; 
-  clearButton.style.width = "30px";
-  clearButton.style.height = "30px";
+  clearButton.style.marginTop = "10px";
+  clearButton.style.width = "16px";
+  clearButton.style.height = "16px";
   clearButton.style.cursor = "pointer";
 
   clearButton.addEventListener("click", () => {

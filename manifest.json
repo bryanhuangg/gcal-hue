@@ -22,8 +22,16 @@
         "https://calendar.google.com/*",
         "http://calendar.google.com/*"
       ],
-      "run_at": "document_end",
-      "web_accessible_resources": ["images/*.png"]
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["images/icon.png", "images/trash16.png"],
+      "matches": [
+        "https://calendar.google.com/*",
+        "http://calendar.google.com/*"
+      ]
     }
   ]
 }
