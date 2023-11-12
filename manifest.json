@@ -7,7 +7,7 @@
     "https://calendar.google.com/*",
     "http://calendar.google.com/*"
   ],
-  "permissions": ["activeTab", "storage"],
+  "permissions": ["storage"],
   "action": {
     "default_icon": {
       "16": "images/icon.png",
