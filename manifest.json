@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Hue: Custom Colors for Google Calendar",
+  "name": "Hue: More Colors for Google Calendar",
   "version": "1.0.0",
   "description": "A Chrome extension to give full control over Google Calendar's event colors.",
   "host_permissions": [
