@@ -3,7 +3,9 @@
 </div>
 
 
-## An open-source Chrome extension for Google Calendars
+## An open-source Chrome extension for Google Calendars'
+
 Archvied most viable product Version 1.0.0
+
 Moved to npm + webpack.
 
