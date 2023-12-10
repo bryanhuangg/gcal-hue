@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Hue: More Colors for Google Calendar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Chrome extension designed to enhance and personalize your Google Calendar experience by providing additional customization options and improving overall user convenience.",
   "host_permissions": [
     "https://calendar.google.com/*",
