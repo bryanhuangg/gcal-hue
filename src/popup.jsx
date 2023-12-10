@@ -1,12 +1,13 @@
-import React from 'react';
-import {render} from 'react-dom';
+import React from "react";
+import { render } from "react-dom";
+import { BlockPicker } from "react-color";
 
 function Popup() {
-    return (
-        <div>
-            <h1>Hello World</h1>
-        </div>
-    )
+  return (
+    <div>
+      <BlockPicker/>
+    </div>
+  );
 }
 
-render(<Popup/>, document.getElementById('react-target'));
+render(<Popup />, document.getElementById("react-target"));
