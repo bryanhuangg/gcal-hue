@@ -11,14 +11,14 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "images/icon.png",
-      "48": "images/icon.png",
-      "128": "images/icon.png"
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
     }
   },
   "content_scripts": [
     {
-      "js": ["content/colour.js", "content/selector.js"],
+      "js": ["colour.js", "selector.js"],
       "matches": [
         "https://calendar.google.com/*",
         "http://calendar.google.com/*"
@@ -28,7 +28,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["images/icon.png", "images/trash16.png"],
+      "resources": ["icon.png", "trash16.png"],
       "matches": [
         "https://calendar.google.com/*",
         "http://calendar.google.com/*"
