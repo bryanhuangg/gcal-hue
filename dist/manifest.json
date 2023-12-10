@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Hue: More Colors for Google Calendar",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "A Chrome extension designed to enhance and personalize your Google Calendar experience by providing additional customization options and improving overall user convenience.",
   "host_permissions": [
     "https://calendar.google.com/*",
@@ -11,14 +11,24 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icon.png",
-      "48": "icon.png",
-      "128": "icon.png"
+      "16": "images/icon.png",
+      "48": "images/icon.png",
+      "128": "images/icon.png"
     }
   },
+  "content_scripts": [
+    {
+      "js": ["content/colour.js", "content/selector.js"],
+      "matches": [
+        "https://calendar.google.com/*",
+        "http://calendar.google.com/*"
+      ],
+      "run_at": "document_end"
+    }
+  ],
   "web_accessible_resources": [
     {
-      "resources": ["icon.png", "trash16.png"],
+      "resources": ["images/icon.png", "images/trash16.png"],
       "matches": [
         "https://calendar.google.com/*",
         "http://calendar.google.com/*"
