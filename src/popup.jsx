@@ -8,3 +8,5 @@ function Popup() {
         </div>
     )
 }
+
+render(<Popup/>, document.getElementById('react-target'));
