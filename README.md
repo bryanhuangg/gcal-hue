@@ -4,12 +4,6 @@
 
 
 ## An open-source Chrome extension for Google Calendars
-Currently on version 1.0.0
+Archvied most viable product Version 1.0.0
+Moved to npm + webpack.
 
-
-
-## Screenshots
-
-<div align="center">
-  <img src="https://github.com/bryanhuangg/gcal-hue/blob/main/images/screenshot.png" alt="Banner" width="600"/>
-</div>
