@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { render } from "react-dom";
-import { BlockPicker } from "react-color";
 import { CloseButton } from "@chakra-ui/close-button";
 import {
   ChakraProvider,
@@ -10,15 +9,37 @@ import {
   Tab,
   TabPanel,
   Switch,
+  SimpleGrid,
+  Circle,
+  Tooltip,
+  Button,
+  useDisclosure,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
 } from "@chakra-ui/react";
+
 import { IoMdSettings, IoMdColorPalette } from "react-icons/io";
+import { SketchPicker } from "react-color";
 
 function Popup() {
-  const [background, setBackground] = useState("#d9e3f0");
+  const presetColors = [
+    "#FFB3BA",
+    "#FFDFBA",
+    "#FFFFBA",
+    "#BAFFC9",
+    "#BAE1FF",
+    "#D1BBFF",
+  ];
+  const [colorPalette, setColorPalette] = useState([]);
 
-  const handleChangeComplete = (color) => {
-    setBackground(color.hex);
-  };
+  // Get the color palette from local storage when the component mounts
+  useEffect(() => {
+    chrome.storage.local.get(["colorPalette"], function (result) {
+      setColorPalette([...presetColors, ...(result.colorPalette || [])]);
+    });
+  }, []);
 
   const handleClose = () => {
     window.close();
@@ -26,7 +47,7 @@ function Popup() {
 
   return (
     <ChakraProvider>
-      <div style={{ width: "200px" }}>
+      <div style={{ width: "225px" }}>
         <div
           style={{
             display: "flex",
@@ -55,22 +76,39 @@ function Popup() {
 
         <Tabs align="center" variant="enclosed" size="sm">
           <TabList>
-            <Tab> <IoMdColorPalette style={{margin: "2px"}}/> Colors </Tab>
-            <Tab> <IoMdSettings  style={{margin: "2px"}}/> Settings </Tab>
+            <Tab>
+              <IoMdColorPalette style={{ margin: "2px" }} /> Colors
+            </Tab>
+            <Tab>
+              <IoMdSettings style={{ margin: "2px" }} /> Settings
+            </Tab>
           </TabList>
           <TabPanels>
             {/* Color Pallete */}
             <TabPanel>
-              <BlockPicker
-                color={background}
-                onChangeComplete={handleChangeComplete}
-              />
+              <SimpleGrid columns={6} spacing={2}>
+                {colorPalette.map((color, index) => (
+                  <Tooltip label={color} key={index}>
+                    <Circle
+                      key={index}
+                      bg={color}
+                      h="20px"
+                      w="20px"
+                      boxShadow="xs"
+                    />
+                  </Tooltip>
+                ))}
+              </SimpleGrid>
+
+              <Button mt={4} size="sm">
+                Add Color
+              </Button>
             </TabPanel>
 
             {/* Settings */}
             <TabPanel>
               Enable colour overlay?
-              <Switch size="sm" style={{marginLeft:'10px'}}/>
+              <Switch size="sm" style={{ marginLeft: "10px" }} />
             </TabPanel>
           </TabPanels>
         </Tabs>
