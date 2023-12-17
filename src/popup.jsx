@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/react";
 
 import { IoMdSettings, IoMdColorPalette } from "react-icons/io";
-import { SketchPicker } from "react-color";
+import { BlockPicker } from "react-color";
 
 function Popup() {
   const presetColors = [
@@ -99,10 +99,12 @@ function Popup() {
                   </Tooltip>
                 ))}
               </SimpleGrid>
+              
 
-              <Button mt={4} size="sm">
+              <Button m={4} size="xs">
                 Add Color
               </Button>
+              <BlockPicker/>
             </TabPanel>
 
             {/* Settings */}
