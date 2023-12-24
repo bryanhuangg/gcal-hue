@@ -34,6 +34,22 @@ function Popup() {
   const [color, setColor] = useState("#BAFFC9");
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
+  const buttonRef = useRef(null);
+  const colorPickerRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (colorPickerRef.current && !colorPickerRef.current.contains(event.target) && buttonRef.current !== event.target) {
+        setShowPicker(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
 
   // Get the color palette from local storage when the component mounts
   useEffect(() => {
@@ -48,16 +64,21 @@ function Popup() {
     });
   }, []);
 
+  // Update the color when the color picker changes
   const handleColorChange = (color) => {
     setColor(color.hex);
   };
 
+
+  // Clear the color palette
   const handleClearPalette = () => {
     chrome.storage.local.remove('colorPalette', function () {
       setColorPalette([]);
     });
   };
 
+
+  // Button action to either open the color picker or save the color
   const openPickerOrSaveColor = () => {
     if (showPicker) {
       chrome.storage.local.get(['colorPalette'], function (result) {
@@ -82,6 +103,8 @@ function Popup() {
     window.close();
   };
 
+
+
   return (
     <ChakraProvider>
       <Toaster position="bottom-center" />
@@ -97,7 +120,6 @@ function Popup() {
             alt="Logo"
             style={{ width: "60px", margin: "10px" }}
           />
-
           <CloseButton
             onClick={handleClose}
             size="sm"
@@ -112,22 +134,18 @@ function Popup() {
           />
         </div>
 
-
-
         <Tabs align="center" variant="enclosed" size="sm">
           <TabList>
             <Tab>
-              <IoMdColorPalette style={{ margin: "2px" }} /> Colors
+              <IoMdColorPalette style={{ margin: "2px" }} /> <span style={{ fontWeight: '500' }}> Colors </span>
             </Tab>
             <Tab>
-              <IoMdSettings style={{ margin: "2px" }} /> Settings
+              <IoMdSettings style={{ margin: "2px" }} /> <span style={{ fontWeight: '500' }}> Settings </span>
             </Tab>
           </TabList>
           <TabPanels>
             {/* Color Pallete */}
             <TabPanel>
-
-
               {colorPalette.length > 0 && (
                 <SimpleGrid mb={4} columns={6} spacing={2}>
                   {colorPalette.map((color, index) => (
@@ -156,24 +174,24 @@ function Popup() {
               )}
 
               <Box>
-                <Button size="xs" onClick={openPickerOrSaveColor}>
+                <Button ref={buttonRef} size="xs" onClick={openPickerOrSaveColor}>
                   {showPicker ? 'Save Color' : 'Open Color Picker'}
                 </Button>
-                {showPicker && (
-                  <Box mt={4}>
-                    <BlockPicker color={color} colors={presetColors} onChangeComplete={handleColorChange} />
-                  </Box>
-                )}
+                <div ref={colorPickerRef}>
+                  {showPicker && (
+                    <Box mt={4}>
+                      <BlockPicker color={color} colors={presetColors} onChangeComplete={handleColorChange} />
+                    </Box>
+                  )}
+                </div>
               </Box>
-
-
 
             </TabPanel>
 
             {/* Settings */}
             <TabPanel>
-              Enable colour overlay?
-              <Switch size="sm" style={{ marginLeft: "10px" }} />
+              {/* Enable colour overlay?
+              <Switch size="sm" style={{ marginLeft: "10px" }} /> */}
 
               <Button mt={2} size="xs" colorScheme="red" onClick={handleClearPalette}>Clear Colors</Button>
             </TabPanel>
