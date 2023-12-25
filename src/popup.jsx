@@ -193,7 +193,7 @@ function Popup() {
               {/* Enable colour overlay?
               <Switch size="sm" style={{ marginLeft: "10px" }} /> */}
 
-              <Button mt={2} size="xs" colorScheme="red" onClick={handleClearPalette}>Clear Colors</Button>
+              <Button mt={2} size="xs" colorScheme="red" onClick={handleClearPalette}>Clear Palette</Button>
             </TabPanel>
           </TabPanels>
         </Tabs>
