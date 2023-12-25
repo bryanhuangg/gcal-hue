@@ -12,11 +12,6 @@ Welcome to Hue, the open-source Chrome extension created for Google Calendar ent
 
 
 
-## Screenshots
-
-![App Screenshot](https://github.com/bryanhuangg/gcal-hue/blob/mvp/images/screenshot.png)
-
-
 ## Run Locally
 
 Clone the project
