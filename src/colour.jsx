@@ -16,7 +16,7 @@ const calendarObserver = new MutationObserver((mutationsList) => {
   calendarObserver.observe(targetElement, calendarObserverConfig);
   
   function applyColorsToEvents() {
-    chrome.storage.sync.get(null, (items) => {
+    chrome.storage.local.get(null, (items) => {
       for (const eventId in items) {
         const color = items[eventId];
         if (color) {
@@ -86,6 +86,6 @@ const calendarObserver = new MutationObserver((mutationsList) => {
   
   
   // Check storage usage
-  chrome.storage.sync.getBytesInUse(null, function(bytesUsed) {
+  chrome.storage.local.getBytesInUse(null, function(bytesUsed) {
     console.log("Storage used: " + bytesUsed + " bytes");
   });

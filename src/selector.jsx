@@ -33,7 +33,7 @@ function injectColorPalette(mutationsList, observer) {
             // Add click event to the color element
             colorElement.addEventListener('click', () => {
               const eventId = findParentDataEventId(colorElement).getAttribute('data-eid');
-              chrome.storage.sync.set({ [eventId]: color })
+              chrome.storage.local.set({ [eventId]: color })
             });
 
             // Every 6 colors, append the colorDivGroup to the innerDiv and create a new colorDivGroup
@@ -50,7 +50,7 @@ function injectColorPalette(mutationsList, observer) {
             if (divElement.getAttribute('data-color-index') !== 'hue') {
               divElement.addEventListener('click', () => {
                 const eventId = findParentDataEventId(divElement).getAttribute('data-eid');
-                chrome.storage.sync.remove(eventId);
+                chrome.storage.local.remove(eventId);
               });
             }
           });
