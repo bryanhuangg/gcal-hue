@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { render } from "react-dom";
+import ReactDOM from 'react-dom';
 import { CloseButton } from "@chakra-ui/close-button";
 import {
   ChakraProvider,
@@ -202,4 +202,5 @@ function Popup() {
   );
 }
 
-render(<Popup />, document.getElementById("react-target"));
+const rootElement = document.getElementById("react-target");
+ReactDOM.createRoot(rootElement).render(<Popup />);
