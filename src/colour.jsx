@@ -45,13 +45,13 @@ const calendarObserver = new MutationObserver((mutationsList) => {
   // --- Color change helpers -- //
   
   function changeEventMainColor(eventWrapperElement, color) {
-    let eventElement = eventWrapperElement.querySelector(".VrDepf");
+    let eventElement = eventWrapperElement.querySelector(".VlNR9e");
     if (eventElement) {
       // eventElement is a dot (specific time)
       eventElement.style.borderColor = color;
     } else {
       // event Element is a bar (all day event)
-      eventElement = eventWrapperElement.querySelector(".g3dbUc");
+      eventElement = eventWrapperElement.querySelector(".KF4T6b");
       if (eventElement) {
         eventElement.style.backgroundColor = color;
       }
@@ -66,7 +66,7 @@ const calendarObserver = new MutationObserver((mutationsList) => {
   }
   
   function changeEventSideBarColor(eventWrapperElement, color) {
-    const sidebarElement = eventWrapperElement.querySelector('.zhRc7');
+    const sidebarElement = eventWrapperElement.querySelector('.pmUZFe');
   
     if (sidebarElement) {
       sidebarElement.style.backgroundColor = color;
@@ -74,7 +74,7 @@ const calendarObserver = new MutationObserver((mutationsList) => {
   }
   
   function changeEventBorderColor(eventWrapperElement, color) {
-    const eventBorder = eventWrapperElement.querySelector(".zWcBU");
+    const eventBorder = eventWrapperElement.querySelector(".PxbABe");
     if (eventBorder) {
       if (eventBorder.style.borderRightColor) {
         eventBorder.style.borderRightColor = color;
