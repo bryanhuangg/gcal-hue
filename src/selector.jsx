@@ -1,4 +1,4 @@
-// --- Inject button into the DOM --- //
+// --- Observers --- //
 const paletteObserverConfig = {
   childList: true,
   subtree: true,
@@ -7,6 +7,8 @@ const paletteObserverConfig = {
 const paletteObserver = new MutationObserver(injectColorPalette);
 paletteObserver.observe(document, paletteObserverConfig);
 
+
+// --- Functions --- //
 function injectColorPalette(mutationsList, observer) {
   if (document.querySelector('.colorDivGroup')) return;
   observer.disconnect();
@@ -31,9 +33,9 @@ function injectColorPalette(mutationsList, observer) {
             colorDivGroup.appendChild(colorElement);
 
             // Add click event to the color element
-            colorElement.addEventListener('click', () => {
+            colorElement.addEventListener('click', async () => {
               const eventId = findParentDataEventId(colorElement).getAttribute('data-eid');
-              chrome.storage.local.set({ [eventId]: color })
+              chrome.storage.local.set({ [eventId]: color});
             });
 
             // Every 6 colors, append the colorDivGroup to the innerDiv and create a new colorDivGroup

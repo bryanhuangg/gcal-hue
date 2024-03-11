@@ -49,7 +49,7 @@ function Popup() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-  
+
 
   // Get the color palette from local storage when the component mounts
   useEffect(() => {
@@ -77,6 +77,23 @@ function Popup() {
     });
   };
 
+  const handelClearColors = () => {
+    // Get color palette data
+    chrome.storage.local.get('colorPalette', function (result) {
+      let colorPaletteData = result.colorPalette;
+
+      // Clear local storage
+      chrome.storage.local.clear(function () {
+        let error = chrome.runtime.lastError;
+        if (error) {
+          console.error(error);
+        } else {
+          // Set color palette data back to local storage
+          chrome.storage.local.set({ colorPalette: colorPaletteData })
+        }
+      });
+    });
+  }
 
   // Button action to either open the color picker or save the color
   const openPickerOrSaveColor = () => {
@@ -193,7 +210,8 @@ function Popup() {
               {/* Enable colour overlay?
               <Switch size="sm" style={{ marginLeft: "10px" }} /> */}
 
-              <Button mt={2} size="xs" colorScheme="red" onClick={handleClearPalette}>Clear Palette</Button>
+              <Button mt={2} size="xs" colorScheme="gray" onClick={handleClearPalette}>Clear Palette</Button>
+              <Button mt={2} size="xs" colorScheme="red" onClick={handelClearColors}>Clear Event Colors</Button>
             </TabPanel>
           </TabPanels>
         </Tabs>

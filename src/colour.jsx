@@ -1,91 +1,53 @@
 // --- Observers --- //
 const calendarObserver = new MutationObserver((mutationsList) => {
-    mutationsList.forEach((mutation) => {
-      applyColorsToEvents();
-    });
+  mutationsList.forEach((mutation) => {
+    updateEventColorsFromStorage();
   });
-  
-  const calendarObserverConfig = {
-    childList: true,
-    subtree: true,
-  };
-  
-  calendarObserver.observe(document, calendarObserverConfig);
-  
-  const targetElement = document.getElementById("yDmH0d");
-  calendarObserver.observe(targetElement, calendarObserverConfig);
-  
-  function applyColorsToEvents() {
-    chrome.storage.local.get(null, (items) => {
-      for (const eventId in items) {
-        const color = items[eventId];
-        if (color) {
-          changeEventColor(eventId, color);
-        }
+});
+
+const calendarObserverConfig = {
+  childList: true,
+  subtree: true,
+};
+
+calendarObserver.observe(document, calendarObserverConfig);
+
+const targetElement = document.getElementById("yDmH0d");
+calendarObserver.observe(targetElement, calendarObserverConfig);
+
+// --- Functions --- //
+function updateEventColorsFromStorage() {
+  chrome.storage.local.get(null, (items) => {
+    for (const eventId in items) {
+      const color = items[eventId];
+      if (color && eventId != 'colorPalette') {
+        changeSingleEventColor(eventId, color);
+      }
+    }
+  });
+}
+
+function changeSingleEventColor(eventId, color) {
+  const eventWrapperElements = document.querySelectorAll(
+    `[data-eventid="${eventId}"]`
+  );
+
+  if (eventWrapperElements) {
+    eventWrapperElements.forEach((eventWrapperElement) => {
+      updateColorOfEventElement(eventWrapperElement, color);
+    });
+  }
+}
+
+function updateColorOfEventElement(eventWrapperElement, color) {
+  const elements = [eventWrapperElement, ...eventWrapperElement.querySelectorAll('*')];
+  const stylesToChange = ['backgroundColor', 'borderColor', 'borderLeftColor', 'borderRightColor'];
+
+  for (let element of elements) {
+    stylesToChange.forEach(style => {
+      if (element.style[style]) {
+        element.style[style] = color;
       }
     });
   }
-  
-  // --- Event bar color change --- //
-  function changeEventColor(eventId, color) {
-    const eventWrapperElements = document.querySelectorAll(
-      `[data-eventid="${eventId}"]`
-    );
-  
-    if (eventWrapperElements) {
-      eventWrapperElements.forEach((eventWrapperElement) => {
-        changeEventMainColor(eventWrapperElement, color);
-        changeEventBorderColor(eventWrapperElement, color);
-        changeEventSideBarColor(eventWrapperElement, color);
-        changeMaterialIconColor(eventWrapperElement, color);
-      });
-    }
-  }
-  
-  // --- Color change helpers -- //
-  
-  function changeEventMainColor(eventWrapperElement, color) {
-    let eventElement = eventWrapperElement.querySelector(".VlNR9e");
-    if (eventElement) {
-      // eventElement is a dot (specific time)
-      eventElement.style.borderColor = color;
-    } else {
-      // event Element is a bar (all day event)
-      eventElement = eventWrapperElement.querySelector(".KF4T6b");
-      if (eventElement) {
-        eventElement.style.backgroundColor = color;
-      }
-    }
-  }
-  
-  function changeMaterialIconColor(eventWrapperElement, color) {
-    const materialIconElement = eventWrapperElement.querySelector(".T7dzVe");
-    if (materialIconElement) {
-      materialIconElement.style.backgroundColor = color;
-    }
-  }
-  
-  function changeEventSideBarColor(eventWrapperElement, color) {
-    const sidebarElement = eventWrapperElement.querySelector('.pmUZFe');
-  
-    if (sidebarElement) {
-      sidebarElement.style.backgroundColor = color;
-    }
-  }
-  
-  function changeEventBorderColor(eventWrapperElement, color) {
-    const eventBorder = eventWrapperElement.querySelector(".PxbABe");
-    if (eventBorder) {
-      if (eventBorder.style.borderRightColor) {
-        eventBorder.style.borderRightColor = color;
-      } else if (eventBorder.style.borderLeftColor) {
-        eventBorder.style.borderLeftColor = color;
-      }
-    }
-  }
-  
-  
-  // Check storage usage
-  chrome.storage.local.getBytesInUse(null, function(bytesUsed) {
-    console.log("Storage used: " + bytesUsed + " bytes");
-  });
+}
