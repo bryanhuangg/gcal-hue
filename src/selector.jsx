@@ -4,66 +4,117 @@ const paletteObserverConfig = {
   subtree: true,
 };
 
-const paletteObserver = new MutationObserver(injectColorPalette);
+const paletteObserver = new MutationObserver(getColorPaletteAndModifyColorPicker);
 paletteObserver.observe(document, paletteObserverConfig);
 
+// --- Constants --- //
+const SCENARIO = {
+  /*
+    Scenarios that triggers color picker:
+    0. CONTEXT: When user is in Calendar view and right clicks on an event.
+    1. NEWEVENT: When user is creating a new event.
+    2. EVENTEDIT: When user is editing an existing event.
+  */
+  CONTEXT: 0,
+  EVENTEDIT: 1,
+  NEWEVENT: 2,
+}
 
 // --- Functions --- //
-function injectColorPalette(mutationsList, observer) {
+function getColorPaletteAndModifyColorPicker(mutationsList, observer) {
+  /*
+    Get color palette from chrome storage and modify color picker. Parent function for all color picker modifications.
+
+    @param {MutationRecord[]} mutationsList
+    @param {MutationObserver} observer
+  */
   if (document.querySelector('.colorDivGroup')) return;
   observer.disconnect();
 
   chrome.storage.local.get(["colorPalette"], function (result) {
     if (result.colorPalette) {
       const validColors = result.colorPalette.filter(color => /^#([0-9A-F]{3}){1,2}$/i.test(color));
-      // Find the parent color selector div
-      const parentDiv = document.querySelector('.B7PAmc.ztKZ3d');
-      if (parentDiv) {
-        const innerDiv = parentDiv.querySelector('div');
-        if (innerDiv) {
-          let colorDivGroup = document.createElement('div');
-          colorDivGroup.className = 'vbVGZb colorDivGroup';
-
-          validColors.forEach((color, index) => {
-            // Create the Ly0WL HTML for each color. All custom Ly0WL elements have event-color-index = "hue".
-            const ly0WLHTML = `<div jsname="Ly0WL" jsaction="click:rhcxd; keydown:Hq2uPe; focus:htbtNd" tabindex="0" role="menuitem" class="A1wrjc kQuqUe pka1xd" data-color="${color}" data-color-index="hue" aria-label="Color, set event color" style="background-color: ${color};"><i class="google-material-icons meh4fc hggPq lLCaB M8B6kc" aria-hidden="true">bigtop_done</i><div class="oMnJrf" aria-hidden="true" jscontroller="eg8UTd" jsaction="focus: eGiyHb;mouseenter: eGiyHb; touchstart: eGiyHb" data-text="Color" data-tooltip-position="top" data-tooltip-vertical-offset="0" data-tooltip-horizontal-offset="0" data-tooltip-only-if-necessary="false"></div></div>`;
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = ly0WLHTML;
-            const colorElement = tempDiv.firstChild;
-            colorDivGroup.appendChild(colorElement);
-
-            // Add click event to the color element
-            colorElement.addEventListener('click', async () => {
-              const eventId = findParentDataEventId(colorElement).getAttribute('data-eid');
-              chrome.storage.local.set({ [eventId]: color});
-            });
-
-            // Every 6 colors, append the colorDivGroup to the innerDiv and create a new colorDivGroup
-            if ((index + 1) % 6 === 0) {
-              innerDiv.appendChild(colorDivGroup);
-              colorDivGroup = document.createElement('div');
-              colorDivGroup.className = 'vbVGZb colorDivGroup';
-            }
-          });
-
-          const divElements = document.querySelectorAll('div[jsname="Ly0WL"]');
-          divElements.forEach((divElement) => {
-            hideCheckmarkIcon(divElement);
-            if (divElement.getAttribute('data-color-index') !== 'hue') {
-              divElement.addEventListener('click', () => {
-                const eventId = findParentDataEventId(divElement).getAttribute('data-eid');
-                chrome.storage.local.remove(eventId);
-              });
-            }
-          });
-
-          if (validColors.length % 6 !== 0) {
-            innerDiv.appendChild(colorDivGroup);
-          }
-        }
-      }
+      injectColorPalette(validColors);
+      hideCheckmarkAndModifyBuiltInColors();
     }
     observer.observe(document, paletteObserverConfig);
+  });
+}
+
+function injectColorPalette(validColors) {
+  const colorSelectorDiv = document.querySelector('.B7PAmc');
+  if (colorSelectorDiv) {
+    const innerColorSelectorDiv = colorSelectorDiv.querySelector('div');
+    if (innerColorSelectorDiv) {
+
+      const scenario = findColorPickerScenario(colorSelectorDiv);
+      let rowSize = 2;
+      if (scenario == SCENARIO.CONTEXT) 
+        rowSize = 6;
+      
+
+      let colorDivGroup = document.createElement('div');
+      colorDivGroup.className = 'vbVGZb colorDivGroup';
+
+      validColors.forEach((color, index) => {
+        const colorElement = createColorElement(color, scenario);
+        colorDivGroup.appendChild(colorElement);
+
+        if ((index + 1) % rowSize === 0) {
+          innerColorSelectorDiv.appendChild(colorDivGroup);
+          colorDivGroup = document.createElement('div');
+          colorDivGroup.className = 'vbVGZb colorDivGroup';
+        }
+      });
+
+      if (validColors.length % rowSize !== 0) {
+        innerColorSelectorDiv.appendChild(colorDivGroup);
+      }
+    }
+  }
+}
+
+function findColorPickerScenario(colorSelectorDiv) {
+  if (colorSelectorDiv.classList.contains('ztKZ3d')) {
+    return SCENARIO.CONTEXT;
+  }
+
+  const currentUrl = window.location.href;
+  if (currentUrl.includes('/eventedit/')) {
+    return SCENARIO.EVENTEDIT;
+  }
+
+  return SCENARIO.NEWEVENT;
+}
+
+
+function createColorElement(color, scenario) {
+  
+  let ly0WLHTML = `<div jsname="Ly0WL" jsaction="click:rhcxd; keydown:Hq2uPe; focus:htbtNd" tabindex="0" role="menuitem" class="A1wrjc kQuqUe pka1xd" data-color="${color}" data-color-index="hue" aria-label="Color, set event color" style="background-color: ${color};"><i class="google-material-icons meh4fc hggPq lLCaB M8B6kc" aria-hidden="true">bigtop_done</i><div class="oMnJrf" aria-hidden="true" jscontroller="eg8UTd" jsaction="focus: eGiyHb;mouseenter: eGiyHb; touchstart: eGiyHb" data-text="Color" data-tooltip-position="top" data-tooltip-vertical-offset="0" data-tooltip-horizontal-offset="0" data-tooltip-only-if-necessary="false"></div></div>`;
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = ly0WLHTML;
+  const colorElement = tempDiv.firstChild;
+
+
+  colorElement.addEventListener('click', async () => {
+    const eventId = findEventIdByScenario(colorElement, scenario);
+    chrome.storage.local.set({ [eventId]: color });
+  });
+  return colorElement;
+}
+
+
+function hideCheckmarkAndModifyBuiltInColors() {
+  const builtInColorElement = document.querySelectorAll('div[jsname="Ly0WL"]');
+
+  builtInColorElement.forEach((element) => {
+    hideCheckmarkIcon(element);
+    if (element.getAttribute('data-color-index') !== 'hue') {
+      element.addEventListener('click', () => {
+        const eventId = findParentDataEventId(element).getAttribute('data-eid');
+        chrome.storage.local.remove(eventId);
+      });
+    }
   });
 }
 
@@ -72,9 +123,17 @@ function hideCheckmarkIcon(parentElement) {
     ".google-material-icons.meh4fc.hggPq.lLCaB.M8B6kc.eO2Zfd"
   );
   if (existingIconElement) {
-    existingIconElement.className =
-      "google-material-icons meh4fc hggPq lLCaB M8B6kc";
+    existingIconElement.className = "google-material-icons meh4fc hggPq lLCaB M8B6kc";
   }
+}
+
+function findEventIdByScenario(element, scenario) {
+  if (SCENARIO.EVENTEDIT === scenario) {
+    const currentUrl = window.location.href;
+    return currentUrl.split('/eventedit/')[1];
+  }
+
+  return findParentDataEventId(element).getAttribute('data-eid');
 }
 
 function findParentDataEventId(element) {
@@ -83,3 +142,4 @@ function findParentDataEventId(element) {
   }
   return element;
 }
+

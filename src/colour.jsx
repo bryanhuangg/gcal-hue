@@ -1,3 +1,5 @@
+const { Icon } = require("@chakra-ui/react");
+
 // --- Observers --- //
 const calendarObserver = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
@@ -22,6 +24,7 @@ function updateEventColorsFromStorage() {
       const color = items[eventId];
       if (color && eventId != 'colorPalette') {
         changeSingleEventColor(eventId, color);
+        changeEventEditorColorSelector(eventId, Icon);
       }
     }
   });
