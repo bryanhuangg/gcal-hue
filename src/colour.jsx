@@ -71,7 +71,7 @@ function handleTextColors(element, color) {
     if (isColorTooDark(color)) {
       childElement.style.color = '#ffffff';
     } else {
-      childElement.style.color = '';
+      childElement.style.color = '#000000';
     }
   } 
 }
