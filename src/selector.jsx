@@ -90,7 +90,7 @@ function findColorPickerScenario(colorSelectorDiv) {
 
 function createColorElement(color, scenario) {
   
-  let ly0WLHTML = `<div jsname="Ly0WL" jsaction="click:rhcxd; keydown:Hq2uPe; focus:htbtNd" tabindex="0" role="menuitemradio" class="A1wrjc kQuqUe pka1xd" data-color="${color}" data-color-index="hue" aria-label="Color, set event color" style="background-color: ${color};"><i class="google-material-icons meh4fc hggPq lLCaB M8B6kc" aria-hidden="true">bigtop_done</i><div class="oMnJrf" aria-hidden="true" jscontroller="eg8UTd" jsaction="focus: eGiyHb;mouseenter: eGiyHb; touchstart: eGiyHb" data-text="Color" data-tooltip-position="top" data-tooltip-vertical-offset="0" data-tooltip-horizontal-offset="0" data-tooltip-only-if-necessary="false"></div></div>`;
+  let ly0WLHTML = `<div jsname="Ly0WL" jsaction="click:rhcxd; keydown:Hq2uPe; focus:htbtNd" tabindex="0" role="menuitemradio" class="A1wrjc kQuqUe pka1xd" data-color="${color}" data-color-index="-2" aria-label="Color, set event color" style="background-color: ${color};"><i class="google-material-icons meh4fc hggPq lLCaB M8B6kc" aria-hidden="true">bigtop_done</i><div class="oMnJrf" aria-hidden="true" jscontroller="eg8UTd" jsaction="focus: eGiyHb;mouseenter: eGiyHb; touchstart: eGiyHb" data-text="Color" data-tooltip-position="top" data-tooltip-vertical-offset="0" data-tooltip-horizontal-offset="0" data-tooltip-only-if-necessary="false"></div></div>`;
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = ly0WLHTML;
   const colorElement = tempDiv.firstChild;
@@ -111,7 +111,7 @@ function hideCheckmarkAndModifyBuiltInColors() {
   const builtInColorElement = document.querySelectorAll('div[jsname="Ly0WL"]');
   builtInColorElement.forEach((element) => {
       hideCheckmarkIcon(element);
-      if (element.getAttribute('data-color-index') !== 'hue') {
+      if (element.getAttribute('data-color-index') !== '-2') {
         element.addEventListener('click', () => {
           const colorSelectorDiv = document.querySelector('.B7PAmc');
           const scenario = findColorPickerScenario(colorSelectorDiv);
