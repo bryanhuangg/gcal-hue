@@ -3,7 +3,15 @@ const { Icon } = require("@chakra-ui/react");
 // --- Observers --- //
 const calendarObserver = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
-    updateEventColorsFromStorage();
+    try {
+      updateEventColorsFromStorage();
+    } catch (error) {
+      if (error.message === 'Extension context invalidated.') {
+        console.log('Extension was reloaded, updated, or the background page was closed.');
+      } else {
+        throw error; 
+      }
+    }
   });
 });
 
@@ -24,7 +32,7 @@ function updateEventColorsFromStorage() {
       const color = items[eventId];
       if (color && eventId != 'colorPalette') {
         changeSingleEventColor(eventId, color);
-        changeEventEditorColorSelector(eventId, Icon);
+        changeEventEditorColorSelector(eventId, color);
       }
     }
   });
@@ -52,5 +60,15 @@ function updateColorOfEventElement(eventWrapperElement, color) {
         element.style[style] = color;
       }
     });
+  }
+}
+
+function changeEventEditorColorSelector(eventId, color) {
+  const currentUrl = window.location.href;
+  if (currentUrl.includes('/eventedit/') && currentUrl.includes(eventId)) {
+    let divElement = document.querySelector('div[jsname="QPiGnd"].A1wrjc.kQuqUe');
+    if (divElement) {
+      divElement.style.backgroundColor = color; 
+    } 
   }
 }

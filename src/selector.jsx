@@ -90,7 +90,7 @@ function findColorPickerScenario(colorSelectorDiv) {
 
 function createColorElement(color, scenario) {
   
-  let ly0WLHTML = `<div jsname="Ly0WL" jsaction="click:rhcxd; keydown:Hq2uPe; focus:htbtNd" tabindex="0" role="menuitem" class="A1wrjc kQuqUe pka1xd" data-color="${color}" data-color-index="hue" aria-label="Color, set event color" style="background-color: ${color};"><i class="google-material-icons meh4fc hggPq lLCaB M8B6kc" aria-hidden="true">bigtop_done</i><div class="oMnJrf" aria-hidden="true" jscontroller="eg8UTd" jsaction="focus: eGiyHb;mouseenter: eGiyHb; touchstart: eGiyHb" data-text="Color" data-tooltip-position="top" data-tooltip-vertical-offset="0" data-tooltip-horizontal-offset="0" data-tooltip-only-if-necessary="false"></div></div>`;
+  let ly0WLHTML = `<div jsname="Ly0WL" jsaction="click:rhcxd; keydown:Hq2uPe; focus:htbtNd" tabindex="0" role="menuitemradio" class="A1wrjc kQuqUe pka1xd" data-color="${color}" data-color-index="hue" aria-label="Color, set event color" style="background-color: ${color};"><i class="google-material-icons meh4fc hggPq lLCaB M8B6kc" aria-hidden="true">bigtop_done</i><div class="oMnJrf" aria-hidden="true" jscontroller="eg8UTd" jsaction="focus: eGiyHb;mouseenter: eGiyHb; touchstart: eGiyHb" data-text="Color" data-tooltip-position="top" data-tooltip-vertical-offset="0" data-tooltip-horizontal-offset="0" data-tooltip-only-if-necessary="false"></div></div>`;
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = ly0WLHTML;
   const colorElement = tempDiv.firstChild;
@@ -99,6 +99,9 @@ function createColorElement(color, scenario) {
   colorElement.addEventListener('click', async () => {
     const eventId = findEventIdByScenario(colorElement, scenario);
     chrome.storage.local.set({ [eventId]: color });
+    chrome.storage.local.get(null, function(items) {
+      console.log(items);
+    });
   });
   return colorElement;
 }
@@ -106,15 +109,21 @@ function createColorElement(color, scenario) {
 
 function hideCheckmarkAndModifyBuiltInColors() {
   const builtInColorElement = document.querySelectorAll('div[jsname="Ly0WL"]');
-
   builtInColorElement.forEach((element) => {
-    hideCheckmarkIcon(element);
-    if (element.getAttribute('data-color-index') !== 'hue') {
-      element.addEventListener('click', () => {
-        const eventId = findParentDataEventId(element).getAttribute('data-eid');
-        chrome.storage.local.remove(eventId);
-      });
-    }
+      hideCheckmarkIcon(element);
+      if (element.getAttribute('data-color-index') !== 'hue') {
+        element.addEventListener('click', () => {
+          const colorSelectorDiv = document.querySelector('.B7PAmc');
+          const scenario = findColorPickerScenario(colorSelectorDiv);
+          const eventId = findEventIdByScenario(element, scenario);
+
+          chrome.storage.local.remove(eventId);
+          chrome.storage.local.get(null, function(items) {
+            console.log(items);
+          });
+          
+        });
+      }
   });
 }
 
