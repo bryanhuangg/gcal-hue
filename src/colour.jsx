@@ -59,9 +59,36 @@ function updateColorOfEventElement(eventWrapperElement, color) {
       if (element.style[style]) {
         element.style[style] = color;
       }
+      handleTextColors(element, color);
     });
   }
 }
+
+
+function handleTextColors(element, color) { 
+  let childElement = element.querySelector('span.WBi6vc');
+  if (childElement) {
+    if (isColorTooDark(color)) {
+      childElement.style.color = '#ffffff';
+    } else {
+      childElement.style.color = '';
+    }
+  } 
+}
+
+function isColorTooDark(color) {
+  let r, g, b;
+  if (color.charAt(0) === '#') {
+    let colorValue = parseInt(color.slice(1), 16);
+    r = colorValue >> 16;
+    g = (colorValue >> 8) & 255;
+    b = colorValue & 255;
+  }
+  // Calculate the luminance value
+  let luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance < 0.5;
+}
+
 
 function changeEventEditorColorSelector(eventId, color) {
   const currentUrl = window.location.href;
