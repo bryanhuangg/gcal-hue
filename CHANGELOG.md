@@ -3,11 +3,11 @@
 
 ## Unrelease Changes
 - **Added:**
-  - 
+
 - **Fixed:**
   - Issue where user couldn't set custom colour when creating event
 - **Updated:**
-  - 
+
 
 ## Version 1.0.4 - Interface improvements
 - **Added:**
