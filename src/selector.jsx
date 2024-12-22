@@ -16,8 +16,8 @@ const SCENARIO = {
     2. EVENTEDIT: When user is editing an existing event.
   */
   CONTEXT: 0,
-  EVENTEDIT: 1,
-  NEWEVENT: 2,
+  NEWEVENT: 1,
+  EVENTEDIT: 2,
 }
 
 // --- Functions --- //
@@ -97,11 +97,11 @@ function createColorElement(color, scenario) {
 
 
   colorElement.addEventListener('click', async () => {
-    const eventId = findEventIdByScenario(colorElement, scenario);
+    const eventId = findEventIdByScenario(scenario);
     chrome.storage.local.set({ [eventId]: color });
-    chrome.storage.local.get(null, function(items) {
-      console.log(items);
-    });
+    // chrome.storage.local.get(null, function(items) {
+    //   console.log(items);
+    // });
   });
   return colorElement;
 }
@@ -115,13 +115,12 @@ function hideCheckmarkAndModifyBuiltInColors() {
         element.addEventListener('click', () => {
           const colorSelectorDiv = document.querySelector('.B7PAmc');
           const scenario = findColorPickerScenario(colorSelectorDiv);
-          const eventId = findEventIdByScenario(element, scenario);
+          const eventId = findEventIdByScenario(scenario);
 
           chrome.storage.local.remove(eventId);
-          chrome.storage.local.get(null, function(items) {
-            console.log(items);
-          });
-          
+          // chrome.storage.local.get(null, function(itemsback) {
+          //   console.log(items);
+          // });
         });
       }
   });
@@ -136,19 +135,43 @@ function hideCheckmarkIcon(parentElement) {
   }
 }
 
-function findEventIdByScenario(element, scenario) {
+function findEventIdByScenario(scenario) {
   if (SCENARIO.EVENTEDIT === scenario) {
     const currentUrl = window.location.href;
     return currentUrl.split('/eventedit/')[1];
   }
-
-  return findParentDataEventId(element).getAttribute('data-eid');
-}
-
-function findParentDataEventId(element) {
-  while (element && !element.getAttribute("data-eid")) {
-    element = element.parentElement;
+  else if (SCENARIO.NEWEVENT === scenario) {
+    return findNewEventMenuEventId();
   }
-  return element;
+  else if (SCENARIO.CONTEXT === scenario) {
+    return findContextMenuEventId();
+  }
+  else {
+    console.error("Unsupported scenario");
+  }
 }
 
+function findNewEventMenuEventId() {
+  const eventIdAttribute = "data-eventid"
+
+  // need the [jsname] attribute in this selector bc there can be many div[data-eventid] elements
+  let element = document.querySelector(`div[${eventIdAttribute}][jsname]`);
+
+  if (element === null || element.getAttribute(eventIdAttribute) === null) {
+    console.error("Failed getting event ID");
+  }
+
+  return element.getAttribute(eventIdAttribute);
+}
+
+function findContextMenuEventId() {
+  const eventIdAttribute = "data-eid"
+
+  let element = document.querySelector(`div[${eventIdAttribute}]`);
+
+  if (element === null || element.getAttribute(eventIdAttribute) === null) {
+    console.error("Failed getting event ID");
+  }
+
+  return element.getAttribute(eventIdAttribute)
+}
