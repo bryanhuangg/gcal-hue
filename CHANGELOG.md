@@ -6,6 +6,7 @@
 
 - **Fixed:**
   - Issue where user couldn't set custom colour when creating event
+  
 - **Updated:**
 
 
