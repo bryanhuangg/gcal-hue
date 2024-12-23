@@ -29,7 +29,6 @@ calendarObserver.observe(targetElement, calendarObserverConfig);
 function updateEventColorsFromStorage() {
   chrome.storage.local.get(null, (items) => {
     for (const eventId in items) {
-      console.log(eventId)
       const color = items[eventId];
       if (color && eventId != 'colorPalette') {
         changeAllEventChipColors(eventId, color);
