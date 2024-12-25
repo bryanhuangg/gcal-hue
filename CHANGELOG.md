@@ -6,6 +6,7 @@
 
 - **Fixed:**
   - Issue where user couldn't set custom colour when creating event
+  - Issue where color selection menu would all change to the same color after picking custom color
   
 - **Updated:**
 
