@@ -45,10 +45,19 @@ function changeAllEventChipColors(eventId, color) {
 
   if (allEventChips) {
     allEventChips.forEach((eventChip) => {
-      const eventChipBackground = eventChip.querySelector('div[role="button"]');
-      eventChipBackground.style['backgroundColor'] = color;
+      const colorCircle = eventChip.querySelector('div.VlNR9e')
 
-      handleTextColors(eventChip, color);
+      // case: the event is not an all day event, has the colored circle with white background
+      if (colorCircle != null) {
+        colorCircle.style['borderColor'] = color;
+        handleTextColors(eventChip, '#ffffff');
+      }
+      // case: event is an all day event, has fully colored background
+      else {
+        const eventChipBackground = eventChip.querySelector('div[role="button"]')
+        eventChipBackground.style['backgroundColor'] = color;
+        handleTextColors(eventChip, color)
+      }
     });
   }
 }
