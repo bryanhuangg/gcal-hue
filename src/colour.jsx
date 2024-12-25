@@ -31,39 +31,36 @@ function updateEventColorsFromStorage() {
     for (const eventId in items) {
       const color = items[eventId];
       if (color && eventId != 'colorPalette') {
-        changeSingleEventColor(eventId, color);
-        changeEventEditorColorSelector(eventId, color);
+        changeAllEventChipColors(eventId, color);
+        changeColorSelectorColor(eventId, color);
       }
     }
   });
 }
 
-function changeSingleEventColor(eventId, color) {
-  const eventWrapperElements = document.querySelectorAll(
-    `[data-eventid="${eventId}"]`
+function changeAllEventChipColors(eventId, color) {
+  const allEventChips = document.querySelectorAll(
+    `[data-eventid="${eventId}"][data-eventchip]`
   );
 
-  if (eventWrapperElements) {
-    eventWrapperElements.forEach((eventWrapperElement) => {
-      updateColorOfEventElement(eventWrapperElement, color);
-    });
-  }
-}
+  if (allEventChips) {
+    allEventChips.forEach((eventChip) => {
+      const colorCircle = eventChip.querySelector('div.VlNR9e')
 
-function updateColorOfEventElement(eventWrapperElement, color) {
-  const elements = [eventWrapperElement, ...eventWrapperElement.querySelectorAll('*')];
-  const stylesToChange = ['backgroundColor', 'borderColor', 'borderLeftColor', 'borderRightColor'];
-
-  for (let element of elements) {
-    stylesToChange.forEach(style => {
-      if (element.style[style]) {
-        element.style[style] = color;
+      // case: the event is not an all day event, has the colored circle with white background
+      if (colorCircle != null) {
+        colorCircle.style['borderColor'] = color;
+        handleTextColors(eventChip, '#ffffff');
       }
-      handleTextColors(element, color);
+      // case: event is an all day event, has fully colored background
+      else {
+        const eventChipBackground = eventChip.querySelector('div[role="button"]')
+        eventChipBackground.style['backgroundColor'] = color;
+        handleTextColors(eventChip, color)
+      }
     });
   }
 }
-
 
 function handleTextColors(element, color) { 
   let childElement = element.querySelector('span.WBi6vc');
@@ -90,12 +87,21 @@ function isColorTooDark(color) {
 }
 
 
-function changeEventEditorColorSelector(eventId, color) {
+function changeColorSelectorColor(eventId, color) {
   const currentUrl = window.location.href;
+
+  // case: editing an event
   if (currentUrl.includes('/eventedit/') && currentUrl.includes(eventId)) {
-    let divElement = document.querySelector('div[jsname="QPiGnd"].A1wrjc.kQuqUe');
-    if (divElement) {
-      divElement.style.backgroundColor = color; 
+    let editPageColorSelector = document.querySelector(`div[jsname="QPiGnd"]`);
+    if (editPageColorSelector) {
+      editPageColorSelector.style.backgroundColor = color; 
+    } 
+  }
+  // case: creating an event
+  else {
+    let createModalColorSelector = document.querySelector(`div[data-eventid="${eventId}"] div[jsname="QPiGnd"]`);
+    if (createModalColorSelector) {
+      createModalColorSelector.style.backgroundColor = color; 
     } 
   }
 }
