@@ -9,7 +9,7 @@ const calendarObserver = new MutationObserver((mutationsList) => {
       if (error.message === 'Extension context invalidated.') {
         console.log('Extension was reloaded, updated, or the background page was closed.');
       } else {
-        throw error; 
+        throw error;
       }
     }
   });
@@ -39,30 +39,36 @@ function updateEventColorsFromStorage() {
 }
 
 function changeAllEventChipColors(eventId, color) {
-  const allEventChips = document.querySelectorAll(
-    `[data-eventid="${eventId}"][data-eventchip]`
-  );
+  const allEventChips = document.querySelectorAll(`[data-eventid="${eventId}"][data-eventchip]`);
+  const eventDialog = document.querySelector(`[data-eventid="${eventId}"][id="xDetDlg"]`);
 
   if (allEventChips) {
     allEventChips.forEach((eventChip) => {
       const colorCircle = eventChip.querySelector('div.VlNR9e')
 
-      // case: the event is not an all day event, has the colored circle with white background
+      // Case 1: the event is timed event, has the colored circle with white background
       if (colorCircle != null) {
         colorCircle.style['borderColor'] = color;
         handleTextColors(eventChip, '#ffffff');
       }
-      // case: event is an all day event, has fully colored background
+      // Case 2: event is an all day event, has fully colored background
       else {
         const eventChipBackground = eventChip.querySelector('div[role="button"]')
         eventChipBackground.style['backgroundColor'] = color;
         handleTextColors(eventChip, color)
       }
     });
+    
+    if (eventDialog) {
+      const dialogClickChip = eventDialog.querySelector('div.xnWuge');
+      if (dialogClickChip) {
+        dialogClickChip.style['backgroundColor'] = color;
+      }
+    }
   }
 }
 
-function handleTextColors(element, color) { 
+function handleTextColors(element, color) {
   let childElement = element.querySelector('span.WBi6vc');
   if (childElement) {
     if (isColorTooDark(color)) {
@@ -70,7 +76,7 @@ function handleTextColors(element, color) {
     } else {
       childElement.style.color = '#000000';
     }
-  } 
+  }
 }
 
 function isColorTooDark(color) {
@@ -90,18 +96,18 @@ function isColorTooDark(color) {
 function changeColorSelectorColor(eventId, color) {
   const currentUrl = window.location.href;
 
-  // case: editing an event
+  // Case 1: editing an event
   if (currentUrl.includes('/eventedit/') && currentUrl.includes(eventId)) {
     let editPageColorSelector = document.querySelector(`div[jsname="QPiGnd"]`);
     if (editPageColorSelector) {
-      editPageColorSelector.style.backgroundColor = color; 
-    } 
+      editPageColorSelector.style.backgroundColor = color;
+    }
   }
-  // case: creating an event
+  // Case 2: creating an event
   else {
     let createModalColorSelector = document.querySelector(`div[data-eventid="${eventId}"] div[jsname="QPiGnd"]`);
     if (createModalColorSelector) {
-      createModalColorSelector.style.backgroundColor = color; 
-    } 
+      createModalColorSelector.style.backgroundColor = color;
+    }
   }
 }
