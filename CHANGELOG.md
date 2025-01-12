@@ -5,11 +5,13 @@
 - **Added:**
 
 - **Fixed:**
-  - Issue where user couldn't set custom colour when creating event
-  - Issue where color selection menu would all change to the same color after picking custom color
   
 - **Updated:**
 
+## Version 1.0.5 - Bug fixes
+- **Fixed:**
+  - Issue where user couldn't set custom colour when creating event
+  - Issue where color selection menu would all change to the same color after picking custom color
 
 ## Version 1.0.4 - Interface improvements
 - **Added:**
