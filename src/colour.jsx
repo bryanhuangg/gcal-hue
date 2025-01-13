@@ -1,5 +1,4 @@
 const { Icon } = require("@chakra-ui/react");
-
 // --- Observers --- //
 const calendarObserver = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
@@ -14,16 +13,14 @@ const calendarObserver = new MutationObserver((mutationsList) => {
     }
   });
 });
-
 const calendarObserverConfig = {
   childList: true,
   subtree: true,
 };
-
 calendarObserver.observe(document, calendarObserverConfig);
-
 const targetElement = document.getElementById("yDmH0d");
 calendarObserver.observe(targetElement, calendarObserverConfig);
+
 
 // --- Functions --- //
 function updateEventColorsFromStorage() {
@@ -31,42 +28,39 @@ function updateEventColorsFromStorage() {
     for (const eventId in items) {
       const color = items[eventId];
       if (color && eventId != 'colorPalette') {
-        changeAllEventChipColors(eventId, color);
+        changeSingleEventColor(eventId, color);
         changeColorSelectorColor(eventId, color);
       }
     }
   });
 }
 
-function changeAllEventChipColors(eventId, color) {
-  const allEventChips = document.querySelectorAll(`[data-eventid="${eventId}"][data-eventchip]`);
-  const eventDialog = document.querySelector(`[data-eventid="${eventId}"][id="xDetDlg"]`);
+function changeSingleEventColor(eventId, color) {
+  const eventWrapperElements = document.querySelectorAll(
+    `[data-eventid="${eventId}"]`
+  );
 
-  if (allEventChips) {
-    allEventChips.forEach((eventChip) => {
-      const colorCircle = eventChip.querySelector('div.VlNR9e')
-
-      // Case 1: the event is timed event, has the colored circle with white background
-      if (colorCircle != null) {
-        colorCircle.style['borderColor'] = color;
-        handleTextColors(eventChip, '#ffffff');
-      }
-      // Case 2: event is an all day event, has fully colored background
-      else {
-        const eventChipBackground = eventChip.querySelector('div[role="button"]')
-        eventChipBackground.style['backgroundColor'] = color;
-        handleTextColors(eventChip, color)
-      }
+  if (eventWrapperElements) {
+    eventWrapperElements.forEach((eventWrapperElement) => {
+      updateColorOfEventElement(eventWrapperElement, color);
     });
-    
-    if (eventDialog) {
-      const dialogClickChip = eventDialog.querySelector('div.xnWuge');
-      if (dialogClickChip) {
-        dialogClickChip.style['backgroundColor'] = color;
-      }
-    }
   }
 }
+
+function updateColorOfEventElement(eventWrapperElement, color) {
+  const elements = [eventWrapperElement, ...eventWrapperElement.querySelectorAll('*')];
+  const stylesToChange = ['backgroundColor', 'borderColor', 'borderLeftColor', 'borderRightColor'];
+
+  for (let element of elements) {
+    stylesToChange.forEach(style => {
+      if (element.style[style]) {
+        element.style[style] = color;
+      }
+      handleTextColors(element, color);
+    });
+  }
+}
+
 
 function handleTextColors(element, color) {
   let childElement = element.querySelector('span.WBi6vc');

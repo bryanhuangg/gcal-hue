@@ -8,6 +8,10 @@
   
 - **Updated:**
 
+## Version 1.0.5 - Quick Patch
+- **Fixed:**
+  - Bugs introduced in 1.0.5
+
 ## Version 1.0.5 - Bug fixes
 - **Fixed:**
   - Issue where user couldn't set custom colour when creating event
