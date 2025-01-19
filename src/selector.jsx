@@ -114,9 +114,6 @@ function customColorOnClick(color, scenario) {
     // we only need the ID part, so we slice it out. Also allows color to be set for series events.
     const eventId = findEventIdByScenario(scenario).slice(0, 36) 
     chrome.storage.local.set({ [eventId]: color });
-    chrome.storage.local.get(null, function() {
-      console.log(items);
-    });
   });
   return colorElement;
 }
@@ -139,9 +136,6 @@ function modifyBuiltInColors() {
           const eventId = findEventIdByScenario(scenario).slice(0, 36) ;
 
           chrome.storage.local.remove(eventId);
-          chrome.storage.local.get(null, function() {
-            console.log(items);
-          });
         });
       }
   });

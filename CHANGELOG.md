@@ -9,9 +9,13 @@
 - **Updated:**
 
 ## Version 1.0.5 - Bug fixes
+- **Added:**
+  - Show local storage percentage usage in popup
 - **Fixed:**
   - Issue where user couldn't set custom colour when creating event
   - Issue where color selection menu would all change to the same color after picking custom color
+- **Updated:**
+  - Color now changes for every event in series, store event by first 36 characters of the eventID 
 
 ## Version 1.0.4 - Interface improvements
 - **Added:**
