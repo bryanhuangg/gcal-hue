@@ -36,16 +36,16 @@ function updateEventColorsFromStorage() {
 }
 
 function changeSingleEventColor(eventId, color) {
-  const eventWrapperElements = document.querySelectorAll(
-    `[data-eventid="${eventId}"]`
-  );
+  const allEventElements = document.querySelectorAll('[data-eventid]');
 
-  if (eventWrapperElements) {
-    eventWrapperElements.forEach((eventWrapperElement) => {
-      updateColorOfEventElement(eventWrapperElement, color);
-    });
-  }
+  allEventElements.forEach((element) => {
+    const currentId = element.getAttribute('data-eventid').slice(0, 36);
+    if (currentId === eventId) {
+      updateColorOfEventElement(element, color);
+    }
+  });
 }
+
 
 function updateColorOfEventElement(eventWrapperElement, color) {
   const elements = [eventWrapperElement, ...eventWrapperElement.querySelectorAll('*')];

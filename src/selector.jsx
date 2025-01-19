@@ -42,17 +42,20 @@ function getColorPaletteAndModifyColorPicker(mutationsList, observer) {
 }
 
 function injectColorPalette(validColors) {
+  /*
+    Inject user's color palette into google calendar's color picker.
+
+    @param {string[]} validColors: user's color palette in hex format
+  */
+
   const colorSelectorDiv = document.querySelector('.B7PAmc');
   if (colorSelectorDiv) {
     const innerColorSelectorDiv = colorSelectorDiv.querySelector('div');
     if (innerColorSelectorDiv) {
 
       const scenario = findColorPickerScenario(colorSelectorDiv);
-      let rowSize = 2;
-      if (scenario == SCENARIO.CONTEXT) 
-        rowSize = 6;
+      const rowSize = scenario === SCENARIO.CONTEXT ? 6 : 2;
       
-
       let colorDivGroup = document.createElement('div');
       colorDivGroup.className = 'vbVGZb colorDivGroup';
 
@@ -97,7 +100,7 @@ function createColorElement(color, scenario) {
 
 
   colorElement.addEventListener('click', async () => {
-    const eventId = findEventIdByScenario(scenario);
+    const eventId = findEventIdByScenario(scenario).slice(0, 36)
     chrome.storage.local.set({ [eventId]: color });
     // chrome.storage.local.get(null, function(items) {
     //   console.log(items);
@@ -154,7 +157,7 @@ function findEventIdByScenario(scenario) {
 function findNewEventMenuEventId() {
   const eventIdAttribute = "data-eventid"
 
-  // need the [jsname] attribute in this selector bc there can be many div[data-eventid] elements
+  // Needs the [jsname] attribute in this selector because there can be many div[data-eventid] elements
   let element = document.querySelector(`div[${eventIdAttribute}][jsname]`);
 
   if (element === null || element.getAttribute(eventIdAttribute) === null) {
@@ -166,7 +169,6 @@ function findNewEventMenuEventId() {
 
 function findContextMenuEventId() {
   const eventIdAttribute = "data-eid"
-
   let element = document.querySelector(`div[${eventIdAttribute}]`);
 
   if (element === null || element.getAttribute(eventIdAttribute) === null) {

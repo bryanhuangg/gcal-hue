@@ -1,25 +1,26 @@
-import React, { useState, useEffect, useRef } from "react";
-import ReactDOM from 'react-dom';
-import { CloseButton } from "@chakra-ui/close-button";
 import {
-  ChakraProvider,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Switch,
-  SimpleGrid,
-  Circle,
-  Tooltip,
-  Button,
-  Text,
   Box,
+  Button,
+  ChakraProvider,
+  Circle,
+  SimpleGrid,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  Tooltip,
 } from "@chakra-ui/react";
-import { MdDelete } from "react-icons/md";
-import { IoMdSettings, IoMdColorPalette } from "react-icons/io";
+import { IoMdColorPalette, IoMdSettings } from "react-icons/io";
+import React, { useEffect, useRef, useState } from "react";
+import { Toaster, toast } from 'react-hot-toast';
+
 import { BlockPicker } from "react-color";
-import { toast, Toaster } from 'react-hot-toast';
+import { CloseButton } from "@chakra-ui/close-button";
+import { MdDelete } from "react-icons/md";
+import ReactDOM from 'react-dom/client';
 
 function Popup() {
   const presetColors = [
