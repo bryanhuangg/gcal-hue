@@ -1,25 +1,26 @@
-import React, { useState, useEffect, useRef } from "react";
-import ReactDOM from 'react-dom';
-import { CloseButton } from "@chakra-ui/close-button";
 import {
-  ChakraProvider,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Switch,
-  SimpleGrid,
-  Circle,
-  Tooltip,
-  Button,
-  Text,
   Box,
+  Button,
+  ChakraProvider,
+  Circle,
+  SimpleGrid,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  Tooltip,
 } from "@chakra-ui/react";
-import { MdDelete } from "react-icons/md";
-import { IoMdSettings, IoMdColorPalette } from "react-icons/io";
+import { IoMdColorPalette, IoMdSettings } from "react-icons/io";
+import React, { useEffect, useRef, useState } from "react";
+import { Toaster, toast } from 'react-hot-toast';
+
 import { BlockPicker } from "react-color";
-import { toast, Toaster } from 'react-hot-toast';
+import { CloseButton } from "@chakra-ui/close-button";
+import { MdDelete } from "react-icons/md";
+import ReactDOM from 'react-dom/client';
 
 function Popup() {
   const presetColors = [
@@ -33,6 +34,9 @@ function Popup() {
   const [showPicker, setShowPicker] = useState(false);
   const [color, setColor] = useState("#BAFFC9");
   const [hoveredIndex, setHoveredIndex] = useState(null);
+
+  const [storageUsage, setStorageUsage] = useState({ used: 0, total: chrome.storage.local.QUOTA_BYTES });
+  const storagePercentage = ((storageUsage.used / storageUsage.total) * 100).toFixed(1);
 
   const buttonRef = useRef(null);
   const colorPickerRef = useRef();
@@ -64,6 +68,33 @@ function Popup() {
     });
   }, []);
 
+  // Get the storage usage when the component mounts
+  useEffect(() => {
+    const calculateStorageUsage = () => {
+      chrome.storage.local.get(null)
+        .then(items => {
+          const totalBytes = new TextEncoder().encode(JSON.stringify(items)).length;
+          setStorageUsage(prev => ({
+            ...prev,
+            used: totalBytes
+          }));
+        })
+        .catch(error => {
+          console.error('Error calculating storage usage:', error);
+        });
+    };
+
+    // Initial calculation
+    calculateStorageUsage();
+
+    // Listen for storage changes
+    chrome.storage.onChanged.addListener(calculateStorageUsage);
+
+    // Cleanup listener on unmount
+    return () => {
+      chrome.storage.onChanged.removeListener(calculateStorageUsage);
+    };
+  }, []);
   // Update the color when the color picker changes
   const handleColorChange = (color) => {
     setColor(color.hex);
@@ -212,6 +243,10 @@ function Popup() {
 
               <Button mt={2} size="xs" colorScheme="gray" onClick={handleClearPalette}>Clear Palette</Button>
               <Button mt={2} size="xs" colorScheme="red" onClick={handelClearColors}>Clear Event Colors</Button>
+
+              <Text mt={2} >
+                Storage used: {storagePercentage}%
+              </Text>
             </TabPanel>
           </TabPanels>
         </Tabs>

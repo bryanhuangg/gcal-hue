@@ -35,29 +35,31 @@ function getColorPaletteAndModifyColorPicker(mutationsList, observer) {
     if (result.colorPalette) {
       const validColors = result.colorPalette.filter(color => /^#([0-9A-F]{3}){1,2}$/i.test(color));
       injectColorPalette(validColors);
-      hideCheckmarkAndModifyBuiltInColors();
+      modifyBuiltInColors();
     }
     observer.observe(document, paletteObserverConfig);
   });
 }
 
 function injectColorPalette(validColors) {
+  /*
+    Inject user's color palette into google calendar's color picker.
+
+    @param {string[]} validColors: user's color palette in hex format
+  */
   const colorSelectorDiv = document.querySelector('.B7PAmc');
   if (colorSelectorDiv) {
     const innerColorSelectorDiv = colorSelectorDiv.querySelector('div');
     if (innerColorSelectorDiv) {
 
       const scenario = findColorPickerScenario(colorSelectorDiv);
-      let rowSize = 2;
-      if (scenario == SCENARIO.CONTEXT) 
-        rowSize = 6;
+      const rowSize = scenario === SCENARIO.CONTEXT ? 6 : 2;
       
-
       let colorDivGroup = document.createElement('div');
       colorDivGroup.className = 'vbVGZb colorDivGroup';
 
       validColors.forEach((color, index) => {
-        const colorElement = createColorElement(color, scenario);
+        const colorElement = customColorOnClick(color, scenario);
         colorDivGroup.appendChild(colorElement);
 
         if ((index + 1) % rowSize === 0) {
@@ -75,6 +77,12 @@ function injectColorPalette(validColors) {
 }
 
 function findColorPickerScenario(colorSelectorDiv) {
+  /*
+    Helper function to determine the scenario of the color picker.
+
+    @param {HTMLElement} colorSelectorDiv: color picker div element
+    @return {number} senario: scenario context
+  */
   if (colorSelectorDiv.classList.contains('ztKZ3d')) {
     return SCENARIO.CONTEXT;
   }
@@ -88,26 +96,36 @@ function findColorPickerScenario(colorSelectorDiv) {
 }
 
 
-function createColorElement(color, scenario) {
-  
+function customColorOnClick(color, scenario) {
+  /*
+    handle onclick event for custom color element
+
+    @param {string} color: color in hex format
+    @param {number} scenario: scenario context
+    @return {HTMLElement} colorElement: color
+  */
   let ly0WLHTML = `<div jsname="Ly0WL" jsaction="click:rhcxd; keydown:Hq2uPe; focus:htbtNd" tabindex="0" role="menuitemradio" class="A1wrjc kQuqUe pka1xd" data-color="${color}" data-color-index="-2" aria-label="Color, set event color" style="background-color: ${color};"><i class="google-material-icons meh4fc hggPq lLCaB M8B6kc" aria-hidden="true">bigtop_done</i><div class="oMnJrf" aria-hidden="true" jscontroller="eg8UTd" jsaction="focus: eGiyHb;mouseenter: eGiyHb; touchstart: eGiyHb" data-text="Color" data-tooltip-position="top" data-tooltip-vertical-offset="0" data-tooltip-horizontal-offset="0" data-tooltip-only-if-necessary="false"></div></div>`;
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = ly0WLHTML;
   const colorElement = tempDiv.firstChild;
 
-
   colorElement.addEventListener('click', async () => {
-    const eventId = findEventIdByScenario(scenario);
+    // Actual ID is stored as 36 character base64 encoded string, followed with date and email,
+    // we only need the ID part, so we slice it out. Also allows color to be set for series events.
+    const eventId = findEventIdByScenario(scenario).slice(0, 36) 
     chrome.storage.local.set({ [eventId]: color });
-    // chrome.storage.local.get(null, function(items) {
-    //   console.log(items);
-    // });
   });
   return colorElement;
 }
 
 
-function hideCheckmarkAndModifyBuiltInColors() {
+function modifyBuiltInColors() {
+  /*
+    Hide checkmark icon and modify built-in colors in the color picker:
+    - Hide checkmark icon
+    - Remove color from storage when built-in color is selected
+    - ...
+  */
   const builtInColorElement = document.querySelectorAll('div[jsname="Ly0WL"]');
   builtInColorElement.forEach((element) => {
       hideCheckmarkIcon(element);
@@ -115,18 +133,20 @@ function hideCheckmarkAndModifyBuiltInColors() {
         element.addEventListener('click', () => {
           const colorSelectorDiv = document.querySelector('.B7PAmc');
           const scenario = findColorPickerScenario(colorSelectorDiv);
-          const eventId = findEventIdByScenario(scenario);
+          const eventId = findEventIdByScenario(scenario).slice(0, 36) ;
 
           chrome.storage.local.remove(eventId);
-          // chrome.storage.local.get(null, function(itemsback) {
-          //   console.log(items);
-          // });
         });
       }
   });
 }
 
 function hideCheckmarkIcon(parentElement) {
+  /*  
+    Helper that hides the checkmark icon in the color picker
+
+    @param {HTMLElement} parentElement: parent element of the checkmark icon
+  */
   const existingIconElement = parentElement.querySelector(
     ".google-material-icons.meh4fc.hggPq.lLCaB.M8B6kc.eO2Zfd"
   );
@@ -136,6 +156,12 @@ function hideCheckmarkIcon(parentElement) {
 }
 
 function findEventIdByScenario(scenario) {
+  /*
+    Helper function to find the event ID based on the scenario.
+
+    @param {number} scenario: scenario context
+  */
+
   if (SCENARIO.EVENTEDIT === scenario) {
     const currentUrl = window.location.href;
     return currentUrl.split('/eventedit/')[1];
@@ -152,21 +178,23 @@ function findEventIdByScenario(scenario) {
 }
 
 function findNewEventMenuEventId() {
+  /*
+    Helper function to find the event ID when user is creating a new event.
+  */
   const eventIdAttribute = "data-eventid"
-
-  // need the [jsname] attribute in this selector bc there can be many div[data-eventid] elements
+  // Needs the [jsname] attribute in this selector because there can be many div[data-eventid] elements
   let element = document.querySelector(`div[${eventIdAttribute}][jsname]`);
-
   if (element === null || element.getAttribute(eventIdAttribute) === null) {
     console.error("Failed getting event ID");
   }
-
   return element.getAttribute(eventIdAttribute);
 }
 
 function findContextMenuEventId() {
+  /*
+    Helper function to find the event ID when user is right clicking on an event.
+  */
   const eventIdAttribute = "data-eid"
-
   let element = document.querySelector(`div[${eventIdAttribute}]`);
 
   if (element === null || element.getAttribute(eventIdAttribute) === null) {
