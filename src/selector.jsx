@@ -148,10 +148,10 @@ function hideCheckmarkIcon(parentElement) {
     @param {HTMLElement} parentElement: parent element of the checkmark icon
   */
   const existingIconElement = parentElement.querySelector(
-    ".google-material-icons.meh4fc.hggPq.lLCaB.M8B6kc.eO2Zfd"
+    "i.google-material-icons.lLCaB.M8B6kc.eO2Zfd"
   );
   if (existingIconElement) {
-    existingIconElement.className = "google-material-icons meh4fc hggPq lLCaB M8B6kc";
+    existingIconElement.className = "google-material-icons lLCaB M8B6kc";
   }
 }
 
@@ -187,6 +187,7 @@ function findNewEventMenuEventId() {
   if (element === null || element.getAttribute(eventIdAttribute) === null) {
     console.error("Failed getting event ID");
   }
+  // TODO: this throws error when creating an event by double clicking
   return element.getAttribute(eventIdAttribute);
 }
 

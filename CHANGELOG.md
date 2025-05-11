@@ -5,7 +5,8 @@
 - **Added:**
 
 - **Fixed:**
-  
+  - Issue where color selection menu would all change to the same color after picking custom color
+  - Issue where text color wouldn't change to black on a custom light-colored event background in day and week views
 - **Updated:**
 
 ## Version 1.0.5 - Bug fixes

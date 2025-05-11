@@ -49,3 +49,4 @@ Run in development
 ## Authors
 
 - [@bryanhuangg](https://github.com/bryanhuangg)
+- [@cameronlee101](https://github.com/cameronlee101)

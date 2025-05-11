@@ -21,6 +21,10 @@ calendarObserver.observe(document, calendarObserverConfig);
 const targetElement = document.getElementById("yDmH0d");
 calendarObserver.observe(targetElement, calendarObserverConfig);
 
+const COLOR_SELECTOR_OPTIONS_SELECTOR = 'div[jsname="Ly0WL"]';
+const COLOR_SELECTOR_DISPLAY_SELECTOR = 'div[jsname="QPiGnd"]';
+const MONTH_VIEW_EVENT_CIRCLE_SELECTOR = 'div.VlNR9e';
+const EVENT_TEXT_SELECTORS = 'span.WBi6vc, span.I0UMhf, div.lhydbb';
 
 // --- Functions --- //
 function updateEventColorsFromStorage() {
@@ -51,25 +55,31 @@ function updateColorOfEventElement(eventWrapperElement, color) {
   const elements = [eventWrapperElement, ...eventWrapperElement.querySelectorAll('*')];
   const stylesToChange = ['backgroundColor', 'borderColor', 'borderLeftColor', 'borderRightColor'];
 
+  // The background will be the custom color, unless we are in 'month' view and the event is a limited time event,
+  // in which case the background is white
+  const actualBGColor = elements.find((element) => {
+    return element.matches(MONTH_VIEW_EVENT_CIRCLE_SELECTOR)
+  }) ? '#ffffff' : color;
+
   for (let element of elements) {
-    stylesToChange.forEach(style => {
-      if (element.style[style]) {
-        element.style[style] = color;
-      }
-      handleTextColors(element, color);
-    });
+    // Avoid changing colors of the options in the color picker menu
+    if (!element.matches(COLOR_SELECTOR_OPTIONS_SELECTOR)) {
+      stylesToChange.forEach(style => {
+        if (element.style[style]) {
+          element.style[style] = color;
+        }
+        handleTextColors(element, actualBGColor);
+      });
+    }
   }
 }
 
 
 function handleTextColors(element, color) {
-  let childElement = element.querySelector('span.WBi6vc');
-  if (childElement) {
-    if (isColorTooDark(color)) {
-      childElement.style.color = '#ffffff';
-    } else {
-      childElement.style.color = '#000000';
-    }
+  let elements = element.querySelectorAll(EVENT_TEXT_SELECTORS);
+  let textColor = isColorTooDark(color) ? '#ffffff' : '#000000';
+  for (let element of elements) {
+    element.style.color = textColor;
   }
 }
 
@@ -86,22 +96,15 @@ function isColorTooDark(color) {
   return luminance < 0.5;
 }
 
-
+// Note: color selector's color change in event creation modal is already covered by other functions
 function changeColorSelectorColor(eventId, color) {
   const currentUrl = window.location.href;
 
-  // Case 1: editing an event
+  // Case: editing an event
   if (currentUrl.includes('/eventedit/') && currentUrl.includes(eventId)) {
-    let editPageColorSelector = document.querySelector(`div[jsname="QPiGnd"]`);
+    let editPageColorSelector = document.querySelector(COLOR_SELECTOR_DISPLAY_SELECTOR);
     if (editPageColorSelector) {
       editPageColorSelector.style.backgroundColor = color;
-    }
-  }
-  // Case 2: creating an event
-  else {
-    let createModalColorSelector = document.querySelector(`div[data-eventid="${eventId}"] div[jsname="QPiGnd"]`);
-    if (createModalColorSelector) {
-      createModalColorSelector.style.backgroundColor = color;
     }
   }
 }
