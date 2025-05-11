@@ -18,6 +18,8 @@ const calendarObserverConfig = {
   subtree: true,
 };
 calendarObserver.observe(document, calendarObserverConfig);
+const targetElement = document.getElementById("yDmH0d");
+calendarObserver.observe(targetElement, calendarObserverConfig);
 
 const COLOR_SELECTOR_OPTIONS_SELECTOR = 'div[jsname="Ly0WL"]';
 const COLOR_SELECTOR_DISPLAY_SELECTOR = 'div[jsname="QPiGnd"]';
